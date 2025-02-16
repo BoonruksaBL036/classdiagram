@@ -1,67 +1,80 @@
+export class RoleEnum {
+    public static INSTRUCTOR = "instructor";
+    public static STUDENT = "student";
+}
+
 export class User {
     private userId:string
     private name:string
     private email:string
     private password:string
-    private role:string
+    private role:RoleEnum
 
-    constructor(userId:string,name:string,email:string,password:string,role:string){
-        this.userId = userId
-        this.name = name
-        this.email = email
-        this.password = password
-        this.role = role
+    constructor(userId:string, name:string, email:string, password:string, role:RoleEnum){
+        this.userId = userId;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
     }
     
-    public getUserId():string{
-        return this.userId
+    public getUserId():string {
+        return this.userId;
     }
 
     public getName():string{
-        return this.name
+        return this.name;
     }
 
-    public setName(name:string):void{
-        this.name = name
-    }
-
-    public getEmail():string{
-        return this.email
-    }
-
-    public setEmail(email:string):void{
-        this.email = email
+    public getEmail():string {
+        return this.email;
     }
 
     public getPassword():string{
-        return this.password
+        return this.password;
     }
 
-    public setPassword(password:string):void{
-        this.password = password
+    public getRole():RoleEnum {
+        return this.role;
     }
 
-    public getRole():string{
-        return this.role
+    public setName(name:string):void{
+        this.name = name;
     }
 
-    public setRole(role:string):void{
-        this.role = role
+    public setEmail(email:string):void {
+        this.email = email;
     }
 
-    public Register(email:string,password:string):boolean{
-        return true
+    public setPassword(pass:string): void {
+        this.password = pass;
     }
 
-    public Login(email:string,password:string):boolean{
-        return true
+    public setRole(role:RoleEnum): void {
+        this.role = role;
+    }
+public register(email:string, password:string):boolean {
+        if(email == "" || password == ""){
+            return false;
+        }
+        this.email = email;
+        this.password = password;
+        return true;
     }
 
-    public Logout():boolean{
-        return true
+    public login(email:string, password:string):boolean{
+        if(email === this.email && password === this.password) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public logout():boolean {
+        return false;
     }
 
     public toString():string{
-        return `User[userId=${this.userId},name=${this.name},email=${this.email},password=${this.password},role=${this.role}]`
+        return `[{userId = ${this.userId},name: ${this.name},email: ${this.email},password: ${this.password},role: ${this.role}\n}]`
     }
 }

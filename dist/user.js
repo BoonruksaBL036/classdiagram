@@ -1,6 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
+exports.User = exports.RoleEnum = void 0;
+class RoleEnum {
+}
+exports.RoleEnum = RoleEnum;
+RoleEnum.INSTRUCTOR = "instructor";
+RoleEnum.STUDENT = "student";
 class User {
     constructor(userId, name, email, password, role) {
         this.userId = userId;
@@ -15,38 +20,48 @@ class User {
     getName() {
         return this.name;
     }
-    setName(name) {
-        this.name = name;
-    }
     getEmail() {
         return this.email;
-    }
-    setEmail(email) {
-        this.email = email;
     }
     getPassword() {
         return this.password;
     }
-    setPassword(password) {
-        this.password = password;
-    }
     getRole() {
         return this.role;
+    }
+    setName(name) {
+        this.name = name;
+    }
+    setEmail(email) {
+        this.email = email;
+    }
+    setPassword(pass) {
+        this.password = pass;
     }
     setRole(role) {
         this.role = role;
     }
-    Register(email, password) {
+    register(email, password) {
+        if (email == "" || password == "") {
+            return false;
+        }
+        this.email = email;
+        this.password = password;
         return true;
     }
-    Login(email, password) {
-        return true;
+    login(email, password) {
+        if (email === this.email && password === this.password) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
-    Logout() {
-        return true;
+    logout() {
+        return false;
     }
     toString() {
-        return `User[userId=${this.userId},name=${this.name},email=${this.email},password=${this.password},role=${this.role}]`;
+        return `[{userId = ${this.userId},name: ${this.name},email: ${this.email},password: ${this.password},role: ${this.role}\n}]`;
     }
 }
 exports.User = User;
