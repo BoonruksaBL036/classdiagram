@@ -1,26 +1,35 @@
 import { Activity } from "./Activity"
 import { Instructor } from "./Instructor"
+import { Notification } from "./Notification"
 import { Participant } from "./Participant"
 
 export class Certificate {
     private certificateId : string
-    private recipient : Participant  [] = []
-    private issuer : Instructor [] = []
-    private activity : Activity [] = []
+    private participant : Participant  
+    private issuer : Instructor 
+    private activity : Activity 
     private signature : string
-    private templete : string
+    private template : string
 
-    constructor(certificateId:string,signature:string,template:string){
+    constructor(certificateId:string,participant:Participant,issuer : Instructor ,activity : Activity,signature:string,template:string,){
         this.certificateId = certificateId
+        this.participant = participant
+        this.issuer = issuer
+        this.activity = activity
         this.signature = signature
-        this.templete = template
+        this.template = template
     }
 
-    public generateCertificate():void{
-        0
+    public getcertificateId():string{
+        return this.certificateId
+    }
+    
+    public generateCertificate(certificateId:string,participant:Participant,issuer : Instructor ,activity : Activity,signature:string,template:string):Certificate{
+        return new Certificate (certificateId,participant,issuer,activity,signature,template)
     }
 
-    public sendNotification():void{
-        0
+    public sendNotification():Notification{
+        const notification = new  Notification("NO1",this.participant,"เกียรติพร้อมดาวน์โหลดเเล้ว","อนุมัติ")
+        return notification
     }
 }

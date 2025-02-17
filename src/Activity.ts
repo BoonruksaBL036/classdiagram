@@ -1,6 +1,9 @@
 import { Certificate } from "./Certificate";
 import { Instructor } from "./Instructor";
 import { Participant } from "./Participant";
+import { v4 as uuidv4 } from "uuid"
+import { Registration } from "./Registration";
+import { register } from "module";
 
 export class Activity {
     private activityId: string;
@@ -9,147 +12,71 @@ export class Activity {
     private maxParticipant: number;
     private activityPeriod: string;
     private registrationPeriod: string;
-    private status: string;
+    private status: boolean;
     private approvalRequest: boolean;
     private certificateIssued: boolean;
     private schedule: File | null;
-
-    private instructor:Instructor;
-    private certificate:Certificate;
     private isDeleted:boolean;
 
-    constructor(activityId: string, activityName: string, organizer: string, maxParticipant: number, activityPeriod: string, registrationPeriod: string, appovalRequest: boolean, certificateIssued: boolean, schedule: File | null, instructor: Instructor, certificate:Certificate){
+    public static activities:Activity [];
+
+    constructor( activityId:string,activityName: string, organizer: string, maxParticipant: number, activityPeriod: string, registrationPeriod: string, status: boolean, appovalRequest: boolean, certificateIssued: boolean, schedule: File | null){
         this.activityId = activityId;
         this.activityName = activityName;
         this.organizer = organizer;
         this.maxParticipant = maxParticipant;
         this.activityPeriod = activityPeriod;
         this.registrationPeriod = registrationPeriod;
-        this.status = "Pending";
+        this.status = status;
         this.approvalRequest = appovalRequest;
         this.certificateIssued = certificateIssued;
         this.schedule = schedule;
-    
-        this.instructor = instructor;
-        this.certificate = certificate;
+
         this.isDeleted = false;
+        Activity.activities.push(this)
     }
 
-     // Getters
-     public getActivityId(): string {
-        return this.activityId;
+    public createActivity(activityId:string,activityName: string, organizer: string, maxParticipant: number, activityPeriod: string, registrationPeriod: string,status: boolean, appovalRequest: boolean, certificateIssued: boolean, schedule: File | null):Activity{
+        return new Activity(activityId,activityName,organizer,maxParticipant,activityPeriod,registrationPeriod,status,appovalRequest,certificateIssued,schedule)
     }
 
-    public getActivityName(): string {
-        return this.activityName;
-    }
-
-    public getOrganizer(): string {
-        return this.organizer;
-    }
-
-    public getMaxParticipant(): number {
-        return this.maxParticipant;
-    }
-
-    public getActivityPeriod(): string {
-        return this.activityPeriod;
-    }
-
-    public getRegistrationPeriod(): string {
-        return this.registrationPeriod;
-    }
-
-    public getStatus(): string {
-        return this.status;
-    }
-
-    public isApprovalRequested(): boolean {
-        return this.approvalRequest;
-    }
-
-    public isCertificateIssued(): boolean {
-        return this.certificateIssued;
-    }
-
-    public getSchedule(): File | null {
-        return this.schedule;
-    }
-
-    public getInstructor():Instructor {
-        return this.instructor;
-    }
-
-    public getCertificate():Certificate {
-        return this.certificate;
-    }
-
-    // Setters
-    public setActivityName(name: string): void {
-        this.activityName = name;
-    }
-
-    public setMaxParticipant(limit: number): void {
-        this.maxParticipant = limit;
-    }
-
-    public setStatus(status: string): void {
-        this.status = status;
-    }
-
-    public requestApproval(request: boolean): void {
-        this.approvalRequest = request;
-    }
-
-    public setCertificateIssued(issue: boolean): void {
-        this.certificateIssued = issue;
-    }
-
-    public uploadSchedule(file: File): void {
-        this.schedule = file;
-    }
-
-    // public createActivity():void {
-        
-    // }
-
-    public updateActivity(activityId:string, activityName:string, organizer:string, maxParticipant:number):Activity | null {
-        // const activity = new Activity()
-        if(this.activityId !== activityId){
-            console.error(`Activity with ID ${activityId} not found!`);
-            return null;
-        }
+    public updateActivity(activityId:string,activityName: string, organizer: string, maxParticipant: number, activityPeriod: string, registrationPeriod: string,status: boolean, appovalRequest: boolean, certificateIssued: boolean, schedule: File | null):void{
+        this.activityId = activityId;
         this.activityName = activityName;
         this.organizer = organizer;
         this.maxParticipant = maxParticipant;
-        return this;
+        this.activityPeriod = activityPeriod;
+        this.registrationPeriod = registrationPeriod;
+        this.status = status;
+        this.approvalRequest = appovalRequest;
+        this.certificateIssued = certificateIssued;
+        this.schedule = schedule;
     }
 
-    public publishActivity(): void {
-        if (this.status !== "published") {
-            this.status = "published";
-            console.log(`Activity "${this.activityName}" has been published.`);
-        } else {
-            console.log(`Activity "${this.activityName}" is already published.`);
+    public getActivityName():string{
+        return this.activityName
+    }
+
+    public publisActivity():void{
+        this.status = true
+    }
+
+    public deleteActivity():void{
+        this.isDeleted = true
+    }
+
+    public apporveParticipant(participants:Participant[]):void{
+       for (let i = 0; i < Registration.registrations.length; i++){
+        for (let j = 0; j < participants.length; j++){
+            if(Registration.registrations[i].getParticipant().getName() == participants[j].getName()){
+                Registration.registrations[i].setStatus("approved")
+            }
         }
     }
-
-    public deleteActivity(): void {
-        if (this.isDeleted) {
-            console.log(`Activity "${this.activityName}" has already been deleted.`);
-            return;
-        }
-    
-        this.isDeleted = true;
-        console.log(`Activity "${this.activityName}" has been successfully deleted.`);
+        // Registration.registrations.forEach(register => register.setStatus("approved"))
     }
 
-    public approveParticipant(participants: Participant[]):void {
-        // const participant = participants.map(item => item.getRegistration().getActivity().requestApproval(true));
-        participants.forEach(item => item.getRegistration().setStatus("pass"));
-    }
-
-    public generateCertificate(participants: Participant[]):void {
+    public generateCertificate():void{
 
     }
 }

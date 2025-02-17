@@ -1,11 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Registertion = void 0;
-class Registertion {
+exports.Registration = void 0;
+class Registration {
     constructor(registrationId, activity, participant, status) {
         this.registrationId = registrationId;
         this.activity = activity;
         this.participant = participant;
+        this.status = status;
+        Registration.registrations.push(this);
+    }
+    getParticipant() {
+        return this.participant;
+    }
+    setStatus(status) {
         this.status = status;
     }
     sumbitRegirtration() {
@@ -18,4 +25,4 @@ class Registertion {
         return `Registration = [ registrationId = ${this.registrationId}},activity = ${this.activity},participant=${this.participant},status=${this.status}]`;
     }
 }
-exports.Registertion = Registertion;
+exports.Registration = Registration;
